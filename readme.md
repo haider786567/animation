@@ -774,3 +774,86 @@ gsap.registerPlugin(ScrollTrigger, InertiaPlugin, SplitText, Draggable, Flip)
 ```
 
 > All GSAP Club plugins (SplitText, InertiaPlugin, Flip, Draggable) require a **GSAP Club membership** for production use. ScrollTrigger is free.
+
+---
+
+## Today — June 25, 2026: React Animation Notes
+
+Today covered React animation cleanup patterns and Framer Motion basics.
+
+### GSAP React
+
+| Topic | Note |
+|---|---|
+| `useRef` | Select one DOM element directly without causing a React re-render. |
+| `scope` | Restrict selector text like `".box"` to one component area. |
+| `dependencies` | Rerun `useGSAP` when props, state, or values change. |
+| `revertOnUpdate` | Clean the old GSAP context before rerunning the hook after dependency changes. |
+| `contextSafe` | Make event-handler or delayed animations part of the GSAP cleanup context. |
+| Reusable animation component | Put common animation logic in a wrapper component and reuse it with children. |
+
+```jsx
+const container = useRef(null);
+
+useGSAP(
+  () => {
+    gsap.from(".card", {
+      y: 30,
+      opacity: 0,
+      stagger: 0.1,
+    });
+  },
+  {
+    scope: container,
+    dependencies: [items],
+    revertOnUpdate: true,
+  }
+);
+```
+
+```jsx
+const { contextSafe } = useGSAP({ scope: container });
+
+const handleClick = contextSafe(() => {
+  gsap.to(".box", { rotation: 360, duration: 0.8 });
+});
+```
+
+### Framer Motion
+
+Framer Motion uses `motion` components and animation props.
+
+```jsx
+<motion.div
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, amount: 0.3 }}
+  transition={{ duration: 0.6 }}
+>
+  Scroll reveal
+</motion.div>
+```
+
+Variants keep animation states reusable:
+
+```jsx
+const parentVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const childVariants = {
+  hidden: { opacity: 0, y: 25 },
+  visible: { opacity: 1, y: 0 },
+};
+```
+
+Quick meaning:
+
+```txt
+whileInView     -> animate when element enters viewport
+variants        -> named reusable states
+parent variants -> parent controls child animations, often with staggerChildren
+```
