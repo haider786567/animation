@@ -1,0 +1,177 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html , body{
+    height: 100%;
+    width: 100%;
+    background-color: #0a0a0a;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+#app{
+    width: 100%;
+}
+
+/* ── Page sections (full viewport) ── */
+.page{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.center-content{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* ── Title / SplitText ── */
+.title h1{
+    font-size: 7rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    perspective: 800px;
+}
+.split-word,
+.split-char {
+    display: inline-block;
+}
+.subtitle {
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+    color: #888;
+    text-transform: uppercase;
+}
+
+/* ── Section headings ── */
+.section-heading {
+    font-size: 1rem;
+    letter-spacing: 0.4em;
+    color: #666;
+    font-weight: 300;
+    margin-bottom: 1rem;
+}
+
+/* ── Demo rows (tweens / timeline) ── */
+.demo-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 400px;
+    min-height: 60px;
+}
+.label {
+    font-size: 0.85rem;
+    color: #666;
+    font-family: monospace;
+    min-width: 140px;
+    text-align: left;
+}
+
+/* ── Boxes ── */
+.box{
+    height: 60px;
+    width: 60px;
+    background-color: #e94560;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.box-from-demo {
+    background-color: #ff6b6b;
+}
+.box-fromto-demo {
+    background-color: #9b59b6;
+}
+
+/* ── Buttons ── */
+button{
+    padding: 10px 20px;
+    margin: 6px;
+    border-radius: 5px;
+    border: none;
+    background-color: #1a1a1a;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+button:hover {
+    background-color: #333;
+}
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+/* ── Stagger container ── */
+.stagger-container {
+    display: flex;
+    gap: 12px;
+    width: 360px;
+    min-height: 70px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px dashed #333;
+    border-radius: 12px;
+    transition: all 0.4s ease;
+}
+.stagger-container.layout-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 200px;
+}
+.dot {
+    height: 50px;
+    width: 50px;
+    background-color: #e94560;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ── Flip button ── */
+#flip-toggle {
+    margin-top: 12px;
+}
+
+/* ── Drag area ── */
+.drag-area {
+    width: 400px;
+    height: 300px;
+    border: 2px dashed #333;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+}
+#drag-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    height: 80px;
+    width: 80px;
+    border-radius: 12px;
+}
+#drag-box:active {
+    cursor: grabbing;
+}
+.instruction {
+    font-size: 0.9rem;
+    color: #666;
+}
