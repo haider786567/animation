@@ -1,0 +1,224 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background: #1a1a2e;
+  color: #eee;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  padding: 24px 32px 80px;
+}
+
+/* ── Page title ── */
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: #e94560;
+  letter-spacing: -0.02em;
+}
+
+/* ── Demo sections ── */
+.demo-section {
+  background: #16213e;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 28px;
+  border: 1px solid #0f3460;
+}
+
+.demo-heading {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.demo-heading code {
+  background: #0f3460;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #e94560;
+}
+
+.demo-desc {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 16px;
+}
+
+/* ── Stage ── */
+.stage {
+  position: relative;
+  background: #0f3460;
+  border-radius: 8px;
+  min-height: 130px;
+  padding: 16px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.stage-rows {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.stage-square {
+  /* taller so the square path is visible */
+  min-height: 360px;
+}
+
+/* ── Boxes ── */
+.box {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.box-red    { background: #e94560; }
+.box-green  { background: #2ecc71; }
+.box-blue   { background: #3498db; }
+.box-yellow { background: #f1c40f; }
+.box-purple { background: #9b59b6; }
+.box-orange { background: #e67e22; }
+
+/* ── Dots (stagger demo) ── */
+.dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e94560;
+}
+
+/* ── Buttons ── */
+.btn {
+  background: #e94560;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #c73650;
+}
+
+.btn-warn {
+  background: #555;
+}
+.btn-warn:hover {
+  background: #777;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Position Parameter Demo ── */
+.stage-pos {
+  padding: 8px 16px;
+}
+
+.pos-lane {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.pos-lane:last-child {
+  border-bottom: none;
+}
+
+.pos-label {
+  width: 180px;
+  font-size: 0.78rem;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.pos-label code {
+  background: #0f3460;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  color: #e94560;
+}
+
+.pos-box {
+  width: 50px;
+  height: 36px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* ── Same Label Demo ── */
+.stage-labels {
+  padding: 12px 16px;
+}
+
+.label-stage-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.label-row-name {
+  width: 110px;
+  font-size: 0.8rem;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.label-box {
+  width: 60px;
+  height: 46px;
+  border-radius: 6px;
+}
+
+.label-timeline-vis {
+  position: relative;
+  height: 28px;
+  background: #0a1a33;
+  border-radius: 4px;
+  margin-top: 4px;
+  overflow: visible;
+}
+
+.label-marker {
+  position: absolute;
+  top: -14px;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  color: #e94560;
+  background: #0f3460;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.label-marker code {
+  background: none;
+  color: #f1c40f;
+  font-size: 0.72rem;
+}
+</style>

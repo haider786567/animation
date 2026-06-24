@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>day-1 — GSAP Tween Family, Easing & Callbacks</title>
+  </head>
+  <body>
+    <div id="app">
+      <h1>GSAP — Tween Family, Easing & Callbacks</h1>
+
+      <!-- 1. Tween Family -->
+      <section>
+        <h2>1. Tween Family</h2>
+        <div class="box box-to">gsap.to()</div>
+        <div class="box box-from">gsap.from()</div>
+        <div class="box box-fromto">gsap.fromTo()</div>
+        <div class="box box-set">gsap.set()</div>
+      </section>
+
+      <!-- 2. Easing -->
+      <section>
+        <h2>2. Easing — in / out / inOut</h2>
+        <div class="box box-ease-out">power2.out</div>
+        <div class="box box-ease-in">power2.in</div>
+        <div class="box box-ease-inout">power2.inOut</div>
+        <div class="box box-ease-back">back.out(2)</div>
+        <div class="box box-ease-elastic">elastic.out</div>
+      </section>
+
+      <!-- 3. Callbacks -->
+      <section>
+        <h2>3. Callback Functions</h2>
+        <div class="box box-callback">callbacks (→ console)</div>
+        <div class="box box-callback-params">onCompleteParams</div>
+        <div class="box box-callback-this">this context</div>
+      </section>
+
+      <!-- 4. Combined: from + in ease + callbacks -->
+      <section>
+        <h2>4. Combined — from + in ease + callbacks</h2>
+        <div class="box box-entrance">power3.in entrance</div>
+      </section>
+
+      <!-- 5. Timeline -->
+      <section>
+        <h2>5. Timeline — fromTo + callbacks</h2>
+        <div class="box box-tl-1">tl fromTo</div>
+        <div class="box box-tl-2">tl to</div>
+        <div class="box box-tl-3">tl fromTo</div>
+      </section>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

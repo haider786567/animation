@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GSAP Timeline & Sequence Animation · Basics</title>
+  </head>
+  <body>
+    <h1 class="page-title">Timeline & Sequence Animation</h1>
+
+    <!-- EXAMPLE 1: Basic Timeline Chaining -->
+    <section class="demo-section" id="demo-1">
+      <h2 class="demo-heading">1. Basic Timeline · Chaining <code>.to()</code></h2>
+      <p class="demo-desc">Animations run one after another in order.</p>
+      <div class="stage">
+        <div class="box box-red" id="box1"></div>
+      </div>
+      <button class="btn" data-tl="demo1">▶ Play</button>
+    </section>
+
+    <!-- EXAMPLE 2: .from() & .fromTo() in a Timeline -->
+    <section class="demo-section" id="demo-2">
+      <h2 class="demo-heading">2. <code>.from()</code> & <code>.fromTo()</code></h2>
+      <p class="demo-desc"><code>.from()</code> animates <em>from</em> the given values; <code>.fromTo()</code> lets you control both start and end.</p>
+      <div class="stage">
+        <div class="box box-green" id="box2"></div>
+      </div>
+      <button class="btn" data-tl="demo2">▶ Play</button>
+    </section>
+
+    <!-- EXAMPLE 3: Labels & Position Parameter -->
+    <section class="demo-section" id="demo-3">
+      <h2 class="demo-heading">3. Labels & Position Parameter</h2>
+      <p class="demo-desc">Place animations at exact times using labels or <code>"+=1"</code> / <code>"-=0.5"</code> offsets.</p>
+      <div class="stage">
+        <div class="box box-blue" id="box3"></div>
+      </div>
+      <button class="btn" data-tl="demo3">▶ Play</button>
+    </section>
+
+    <!-- EXAMPLE 4: Stagger in a Timeline -->
+    <section class="demo-section" id="demo-4">
+      <h2 class="demo-heading">4. Stagger within a Timeline</h2>
+      <p class="demo-desc">Multiple targets staggered in sequence inside a single timeline step.</p>
+      <div class="stage stage-rows" id="stagger-stage">
+        <div class="dot" id="dot1"></div>
+        <div class="dot" id="dot2"></div>
+        <div class="dot" id="dot3"></div>
+        <div class="dot" id="dot4"></div>
+        <div class="dot" id="dot5"></div>
+      </div>
+      <button class="btn" data-tl="demo4">▶ Play</button>
+    </section>
+
+    <!-- EXAMPLE 5: Nested Timelines -->
+    <section class="demo-section" id="demo-5">
+      <h2 class="demo-heading">5. Nested Timelines</h2>
+      <p class="demo-desc">Insert a child timeline into a parent timeline.</p>
+      <div class="stage">
+        <div class="box box-yellow" id="box5"></div>
+      </div>
+      <button class="btn" data-tl="demo5">▶ Play</button>
+    </section>
+
+    <!-- EXAMPLE 6: Timeline Controls -->
+    <section class="demo-section" id="demo-6">
+      <h2 class="demo-heading">6. Timeline Controls</h2>
+      <p class="demo-desc">Play, pause, reverse, seek — timeline has built-in methods.</p>
+      <div class="stage">
+        <div class="box box-purple" id="box6"></div>
+      </div>
+      <div class="btn-group">
+        <button class="btn" data-tl="demo6">▶ Play</button>
+        <button class="btn btn-warn" id="pause6">⏸ Pause</button>
+        <button class="btn btn-warn" id="reverse6">↩ Reverse</button>
+        <button class="btn btn-warn" id="seek6">⏩ Seek 50%</button>
+      </div>
+    </section>
+
+    <!-- EXAMPLE 7: Square Path (Real-world use) -->
+    <section class="demo-section" id="demo-7">
+      <h2 class="demo-heading">7. Practical: Box Tracks a Square Path</h2>
+      <p class="demo-desc">Four <code>.to()</code> calls make a box travel right → down → left → up.</p>
+      <div class="stage stage-square">
+        <div class="box box-orange" id="box7"></div>
+      </div>
+      <button class="btn" data-tl="demo7">▶ Play</button>
+    </section>
+
+    <!-- EXAMPLE 8: Position Parameter Visual Comparison -->
+    <section class="demo-section" id="demo-8">
+      <h2 class="demo-heading">8. Position Parameter — Side-by-Side Visual Comparison</h2>
+      <p class="demo-desc">All 4 lanes start <strong>at the same time</strong>. Each uses a different position value to start its <em>second</em> tween. Watch how the timing differs.</p>
+      <div class="stage stage-pos">
+        <div class="pos-lane">
+          <span class="pos-label">default <code>""</code></span>
+          <div class="box box-red pos-box" id="p-default"></div>
+        </div>
+        <div class="pos-lane">
+          <span class="pos-label"><code>"+=0.5"</code> (delay 0.5s)</span>
+          <div class="box box-green pos-box" id="p-plus"></div>
+        </div>
+        <div class="pos-lane">
+          <span class="pos-label"><code>"-=0.5"</code> (overlap 0.5s)</span>
+          <div class="box box-blue pos-box" id="p-minus"></div>
+        </div>
+        <div class="pos-lane">
+          <span class="pos-label"><code>"<"</code> (same start)</span>
+          <div class="box box-yellow pos-box" id="p-same"></div>
+        </div>
+      </div>
+      <button class="btn" data-tl="demo8">▶ Play</button>
+      <button class="btn btn-warn" id="reset8">↺ Reset All</button>
+    </section>
+
+    <!-- EXAMPLE 9: Same Label = Simultaneous -->
+    <section class="demo-section" id="demo-9">
+      <h2 class="demo-heading">9. Same Label = Simultaneous Start</h2>
+      <p class="demo-desc">Multiple tweens pinned to the <strong>same label</strong> all fire at once. Here 3 boxes use label <code>"go"</code> — they all start together, but each does something different.</p>
+      <div class="stage stage-labels">
+        <div class="label-stage-inner" id="label-stage">
+          <div class="label-row">
+            <span class="label-row-name">Rotate</span>
+            <div class="box box-red label-box" id="l9-r"></div>
+          </div>
+          <div class="label-row">
+            <span class="label-row-name">Scale</span>
+            <div class="box box-green label-box" id="l9-s"></div>
+          </div>
+          <div class="label-row">
+            <span class="label-row-name">Move & Fade</span>
+            <div class="box box-blue label-box" id="l9-m"></div>
+          </div>
+        </div>
+        <div class="label-timeline-vis">
+          <span class="label-marker" style="left:22%">label <code>"go"</code> →</span>
+        </div>
+      </div>
+      <button class="btn" data-tl="demo9">▶ Play</button>
+      <button class="btn btn-warn" id="reset9">↺ Reset</button>
+    </section>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
