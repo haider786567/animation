@@ -857,3 +857,335 @@ whileInView     -> animate when element enters viewport
 variants        -> named reusable states
 parent variants -> parent controls child animations, often with staggerChildren
 ```
+
+---
+
+## Three.js — Notes
+
+A practical reference for working with **Three.js** for 3D rendering on the web. See `three-js/` folder for the running project.
+
+### 1. What is Three.js?
+
+Three.js is a JavaScript 3D library built on top of **WebGL** that simplifies creating and animating 3D scenes in the browser.
+
+The three core building blocks of every Three.js app:
+
+| Block | Role |
+| ----- | ---- |
+| **Scene** | The 3D world — holds meshes, lights, the camera. |
+| **Camera** | The viewpoint — determines what is visible. |
+| **Renderer** | Draws the scene from the camera's perspective onto a `<canvas>`. |
+
+### 2. Installation (Vite + Three.js)
+
+```bash
+# Initialize project
+npm create vite@latest my-three-app
+cd my-three-app
+npm install
+
+# Add Three.js
+npm install three
+```
+
+`package.json` dependencies:
+
+```json
+{
+  "dependencies": { "three": "^0.185.0" },
+  "devDependencies": { "vite": "^8.1.0" }
+}
+```
+
+`index.html` needs a `<canvas>` element:
+
+```html
+<!doctype html>
+<html>
+  <head><title>Three.js</title></head>
+  <body>
+    <canvas></canvas>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
+```
+
+### 3. Scene
+
+The container for everything you want rendered.
+
+```js
+import * as THREE from 'three'
+
+const scene = new THREE.Scene()
+scene.background = new THREE.Color(0x000000) // optional
+```
+
+Add anything visible with `scene.add(object)`.
+
+### 4. Camera
+
+The most common is `PerspectiveCamera` — mimics human eye perspective.
+
+```js
+const camera = new THREE.PerspectiveCamera(
+  75,                                      // FOV in degrees
+  window.innerWidth / window.innerHeight,  // aspect ratio
+  0.1,                                     // near clipping plane
+  100                                      // far clipping plane
+)
+
+camera.position.z = 3   // move back along the Z axis
+```
+
+Parameters:
+
+| Param | Meaning |
+| ----- | ------- |
+| `fov`  | Field of view in degrees. 75° is a good default. |
+| `aspect` | Should match the canvas (`width / height`) to avoid stretching. |
+| `near` | Anything closer than this is clipped. |
+| `far`  | Anything farther than this is clipped. |
+
+Other cameras: `OrthographicCamera` (no perspective distortion), `CubeCamera`, `ArrayCamera`.
+
+### 5. Renderer
+
+`WebGLRenderer` is what draws the scene using WebGL.
+
+```js
+const canvas = document.querySelector('canvas')
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true   // smoother edges
+})
+
+renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+// Render a frame
+renderer.render(scene, camera)
+```
+
+Useful renderer properties:
+
+| Property | Purpose |
+| -------- | ------- |
+| `setSize(w, h)` | Set canvas size in CSS pixels. |
+| `setPixelRatio(n)` | Crisp on high-DPI screens. |
+| `setClearColor(color)` | Background color. |
+| `shadowMap.enabled = true` | Enable shadow rendering. |
+
+### 6. Mesh (Geometry + Material)
+
+A `Mesh` is a visible object — it pairs a **Geometry** (shape) with a **Material** (appearance).
+
+```js
+const cube = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: 0xff0000 })
+)
+
+scene.add(cube)
+```
+
+#### Common Geometries
+
+| Geometry | Constructor |
+| -------- | ----------- |
+| Box | `new THREE.BoxGeometry(w, h, d)` |
+| Sphere | `new THREE.SphereGeometry(radius, widthSegments, heightSegments)` |
+| Plane | `new THREE.PlaneGeometry(w, h)` |
+| Torus | `new THREE.TorusGeometry(radius, tube, radialSeg, tubularSeg)` |
+| Cylinder | `new THREE.CylinderGeometry(rTop, rBottom, h, seg)` |
+| Cone | `new THREE.ConeGeometry(radius, height, seg)` |
+
+#### Common Materials
+
+| Material | Behavior |
+| -------- | -------- |
+| `MeshBasicMaterial` | Flat color, **ignores lights** — great for debugging. |
+| `MeshStandardMaterial` | PBR (physically based), responds to lights. |
+| `MeshPhysicalMaterial` | PBR + advanced effects (clearcoat, transmission). |
+| `MeshPhongMaterial` | Classic Phong shading with specular highlights. |
+| `MeshLambertMaterial` | Simple diffuse lighting. |
+| `ShaderMaterial` | Custom GLSL shaders — full control. |
+
+```js
+// Example: lit material
+const mat = new THREE.MeshStandardMaterial({
+  color: 0xff0000,
+  roughness: 0.5,
+  metalness: 0.5
+})
+```
+
+### 7. Lights
+
+`MeshBasicMaterial` doesn't need lights. For `MeshStandardMaterial` you must add lights:
+
+```js
+// Soft global fill
+scene.add(new THREE.AmbientLight(0xffffff, 0.5))
+
+// Sun-like directional light (casts shadows)
+const dirLight = new THREE.DirectionalLight(0xffffff, 1)
+dirLight.position.set(5, 5, 5)
+scene.add(dirLight)
+
+// Point light (lamp)
+const point = new THREE.PointLight(0xffaa00, 1, 10)
+point.position.set(2, 2, 2)
+scene.add(point)
+```
+
+Light types:
+
+| Light | Behavior |
+| ----- | -------- |
+| `AmbientLight` | Uniform light on everything — no shadows. |
+| `DirectionalLight` | Parallel rays (sun). |
+| `PointLight` | Emits in all directions from a point. |
+| `SpotLight` | Cone of light. |
+| `HemisphereLight` | Sky/ground gradient. |
+
+### 8. Animation Loop
+
+Use `requestAnimationFrame` to render every frame (~60 fps):
+
+```js
+function animate() {
+  cube.rotation.x += 0.01
+  cube.rotation.y += 0.01
+
+  renderer.render(scene, camera)
+  requestAnimationFrame(animate)
+}
+
+animate()
+```
+
+For framerate-independent motion, use a `Clock`:
+
+```js
+const clock = new THREE.Clock()
+
+function animate() {
+  const elapsed = clock.getElapsedTime()
+  cube.rotation.y = elapsed          // radians
+  cube.position.y = Math.sin(elapsed) * 0.5
+  renderer.render(scene, camera)
+  requestAnimationFrame(animate)
+}
+```
+
+### 9. OrbitControls (Camera Interaction)
+
+Lets the user rotate / pan / zoom the camera with the mouse:
+
+```js
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true   // smooth motion
+controls.enablePan = true
+controls.enableZoom = true
+
+function animate() {
+  controls.update()  // required when damping is enabled
+  renderer.render(scene, camera)
+  requestAnimationFrame(animate)
+}
+```
+
+### 10. Transforms: Position, Rotation, Scale
+
+Every `Object3D` (including meshes) has:
+
+```js
+mesh.position.set(x, y, z)     // location
+mesh.rotation.set(x, y, z)     // rotation in radians
+mesh.scale.set(x, y, z)        // scale (1 = original size)
+```
+
+`Object3D` also has a parent/child hierarchy:
+
+```js
+const group = new THREE.Group()
+group.add(mesh1)
+group.add(mesh2)
+scene.add(group)
+
+// Transform the group, children move together
+group.rotation.y = Math.PI / 4
+```
+
+### 11. Resize Handling
+
+Keep the canvas sharp on window resize:
+
+```js
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+})
+```
+
+### 12. Loading Models (GLTFLoader)
+
+```js
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+
+const loader = new GLTFLoader()
+
+loader.load(
+  '/models/robot.glb',
+  (gltf) => {
+    scene.add(gltf.scene)
+  },
+  undefined,
+  (err) => console.error(err)
+)
+```
+
+### 13. Textures
+
+```js
+const textureLoader = new THREE.TextureLoader()
+const tex = textureLoader.load('/textures/wood.jpg')
+
+const mat = new THREE.MeshStandardMaterial({ map: tex })
+```
+
+### 14. Quick Reference Cheatsheet
+
+```txt
+Scene     -> the world: new THREE.Scene()
+Camera    -> the eye: new THREE.PerspectiveCamera(fov, aspect, near, far)
+Renderer  -> the draw call: new THREE.WebGLRenderer({ canvas })
+Mesh      -> shape + look: new Mesh(geometry, material)
+Loop      -> requestAnimationFrame(animate)
+Controls  -> OrbitControls for mouse-based camera
+Lights    -> AmbientLight, DirectionalLight, PointLight, SpotLight
+Geometry  -> Box, Sphere, Plane, Torus, Cylinder, Cone, ...
+Material  -> Basic (no light), Standard (PBR), Physical (advanced)
+Resize    -> update camera.aspect + renderer.setSize
+Model     -> GLTFLoader for .gltf / .glb
+Texture   -> TextureLoader for images
+```
+
+### 15. Classic Pipeline (cheat)
+
+```txt
+1. Create Scene
+2. Create Camera, set position
+3. Create Mesh(es), add to Scene
+4. Create Renderer bound to <canvas>
+5. (Optional) Add Lights
+6. (Optional) Add OrbitControls
+7. animate():
+     update transforms
+     controls.update()
+     renderer.render(scene, camera)
+```
