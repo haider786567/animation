@@ -17,6 +17,10 @@ Built with [Three.js](https://threejs.org/) and [Vite](https://vitejs.dev/).
    - [Camera](#camera)
    - [Renderer](#renderer)
    - [Mesh (Geometry + Material)](#mesh-geometry--material)
+   - [Position, Rotation & Scale (Transforms)](#position-rotation--scale-transforms)
+   - [Lights](#lights)
+   - [Textures](#textures)
+   - [Clock (Time & Animation)](#clock-time--animation)
    - [Animation Loop](#animation-loop)
    - [OrbitControls](#orbitcontrols)
 6. [How It All Fits Together](#-how-it-all-fits-together)
@@ -176,6 +180,164 @@ scene.add(cube)
 
 - `MeshBasicMaterial` ignores lights (great for flat-shaded demos).
 - For realistic lighting, try `MeshStandardMaterial` or `MeshPhysicalMaterial`.
+
+### Position, Rotation & Scale (Transforms)
+
+Every `Object3D` in Three.js (meshes, lights, cameras, groups…) inherits a 3D transform made of three properties. These are the equivalent of moving, spinning, and resizing an object in 3D space.
+
+| Property | What it controls | Common methods |
+| -------- | ---------------- | -------------- |
+| `position` | Where the object lives in the scene (X, Y, Z) | `.set(x, y, z)` or `object.position.x = …` |
+| `rotation` | How the object is rotated (in **radians**, around X/Y/Z) | `.set(x, y, z)` or `object.rotation.x = …` |
+| `scale`    | How big the object is (1 = original size) | `.set(x, y, z)` or `object.scale.x = …` |
+
+```js
+const cube = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshStandardMaterial({ color: 'red' })
+)
+
+// 1) Position — move the cube 2 units right, 1 unit up, and 3 units toward the camera
+cube.position.set(2, 1, 3)
+
+// 2) Rotation — spin around the X and Y axes
+cube.rotation.set(Math.PI / 4, Math.PI / 4, 0)
+
+// 3) Scale — make it twice as wide, half as tall, and keep depth unchanged
+cube.scale.set(2, 0.5, 1)
+```
+
+#### Why this matters
+
+- **Position** is how you *place* things in the world (e.g. moving a light above a desk).
+- **Rotation** is how you *orient* things (e.g. spinning a coin or pointing an arrow).
+- **Scale** is how you *size* things — `1` is identity, `2` doubles, `0.5` halves.
+- All three are relative to the **parent's** transform, so a child inside a `Group` inherits the group's position/rotation/scale.
+
+> 💡 **Tip:** `THREE.MathUtils.degToRad(deg)` converts degrees → radians, which is handy when you'd rather think in degrees.
+
+### Lights
+
+By default, materials like `MeshBasicMaterial` are **unlit** (flat color). To get realistic shading you switch to a light-aware material (e.g. `MeshStandardMaterial`) and add at least one **light**.
+
+Three.js gives you a handful of light types — each one is useful in different situations:
+
+| Light | Behavior | Typical use |
+| ----- | -------- | ----------- |
+| `AmbientLight` | Lights every surface equally from all directions | Cheap "fill" so shadows aren't pitch black |
+| `DirectionalLight` | Parallel rays from one direction (like the sun) | Sunlight, key lights |
+| `PointLight` | Emits in every direction from a single point | Light bulbs, fires |
+| `SpotLight` | A cone of light from a point (like a flashlight) | Stage lighting, headlights |
+| `HemisphereLight` | Sky color from above, ground color from below | Outdoor ambient |
+
+```js
+// Soft fill — applies equally to every face of every object
+const light = new THREE.AmbientLight(0xffffff, 1)
+scene.add(light)
+
+// A bright "sun" — direction defaults to (0, 0, 0) → (0, -1, 0) (straight down)
+const directionalLight = new THREE.DirectionalLight(0xffffff, 5)
+directionalLight.position.set(2, 3, 4) // tilt it so it casts from the top-right
+scene.add(directionalLight)
+```
+
+> ⚠️ `MeshBasicMaterial` **ignores lights** entirely. If your object looks flat, you forgot to switch to `MeshStandardMaterial` / `MeshPhysicalMaterial` / `MeshLambertMaterial`.
+
+### Textures
+
+**Textures** are images applied to the surface of a mesh — they're what turn a plain white cube into a brick, a wooden plank, or a photograph.
+
+#### Loading a texture
+
+Use `THREE.TextureLoader` to asynchronously fetch an image:
+
+```js
+import * as THREE from 'three'
+
+const texture = new THREE.TextureLoader().load(
+  'https://images.unsplash.com/photo-1782233941435-7d4c3cdac42a'
+)
+```
+
+#### Applying a texture to a material
+
+Pass it as the `map` property of a material:
+
+```js
+const cube = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshStandardMaterial({ map: texture }) // ← texture becomes the surface
+)
+scene.add(cube)
+```
+
+#### Other useful texture slots
+
+| Slot | What it controls |
+| ---- | ---------------- |
+| `map`            | The base color of the surface |
+| `normalMap`      | Bumps / dents (fakes surface detail without geometry) |
+| `roughnessMap`   | Per-pixel "shininess" (works with `MeshStandardMaterial`) |
+| `metalnessMap`   | Per-pixel metalness |
+| `aoMap`          | Ambient occlusion shading |
+
+```js
+// Example: texture + custom base color
+const material = new THREE.MeshStandardMaterial({
+  map: texture,
+  color: 0xffffff // tint applied on top of the texture (white = no tint)
+})
+```
+
+> 💡 **Tip:** When loading from a URL, set `texture.colorSpace = THREE.SRGBColorSpace` so colors render correctly.
+
+### Clock (Time & Animation)
+
+`THREE.Clock` gives you a reliable timer — perfect for animations, physics, or anything that depends on *time elapsed since the page loaded*.
+
+```js
+const clock = new THREE.Clock()
+```
+
+It exposes two important methods:
+
+| Method | Returns | Use it for |
+| ------ | ------- | ---------- |
+| `getElapsedTime()` | Total seconds since the clock started | Continuous motion (rotations, oscillations) |
+| `getDelta()` | Seconds since the **last** call to `getDelta()` | Frame-rate-independent step-based updates |
+
+#### Continuous rotation example
+
+```js
+function animate() {
+  const elapsed = clock.getElapsedTime()
+
+  // Rotate one full turn every ~6.28s (2π radians)
+  cube.rotation.x = elapsed
+  cube.rotation.y = elapsed
+
+  renderer.render(scene, camera)
+  requestAnimationFrame(animate)
+}
+animate()
+```
+
+#### Frame-rate-independent physics-style update
+
+```js
+function animate() {
+  const delta = clock.getDelta() // seconds since last frame
+
+  cube.position.x += 1 * delta  // moves 1 unit per second regardless of FPS
+  cube.rotation.y += 1 * delta  // spins 1 rad/s regardless of FPS
+
+  renderer.render(scene, camera)
+  requestAnimationFrame(animate)
+}
+animate()
+```
+
+> 💡 **Why not just `+= 0.01`?** Hard-coded increments look different on a 60Hz monitor vs a 144Hz monitor. Multiplying by `delta` keeps motion consistent across devices.
 
 ### Animation Loop
 
